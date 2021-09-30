@@ -1,6 +1,6 @@
 let web3, eth, accounts, contract, decimals;
 
-const contractAddress = "0xC4d1033CB7dF687a9E6c278F041D0d0a9e33A08e";
+const contractAddress = "0x5061abE05ef2b768faA11B3eC83b289c4A333407";
 
 const getWeb3 = () => {
     return new Promise((resolve, reject) => {
