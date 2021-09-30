@@ -26,7 +26,7 @@ const getWeb3 = () => {
 async function display() {
     updateBalance();
     updateTotalSupply();
-    $("#address")[0].textContent = accounts[0];
+    updateAddress();
 }
 
 async function updateBalance() {
@@ -39,6 +39,10 @@ async function updateBalance() {
 async function updateTotalSupply() {
     const totalSupply = parseInt(await contract.methods.totalSupply().call());
     $("#total-supply")[0].textContent = totalSupply / 10 ** decimals;
+}
+
+async function updateAddress() {
+    $("#address")[0].textContent = accounts[0];
 }
 
 const getContract = async (web3) => {
@@ -116,8 +120,14 @@ async function init() {
     display();
     eth.on("accountsChanged", (new_accounts) => {
         accounts = new_accounts;
-        display();
+        updateAddress();
+        updateBalance();
     });
 }
 
 init();
+
+// const id = setInterval(async () => {
+//     updateTotalSupply();
+//     console.log("TOTAL SUPPLY UPDATED");
+// }, 10000);
