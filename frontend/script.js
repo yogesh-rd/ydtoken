@@ -92,6 +92,7 @@ const spend = async () => {
     await contract.methods
         .transferFrom(owner, receiver, BigInt(amount * 10 ** decimals))
         .send({ from: accounts[0], gas: 400000 });
+    updateBalance();
 };
 
 const burn = async () => {
