@@ -11,11 +11,36 @@ contract YDToken {
 
 	event Transfer (address indexed _from, address indexed _to, uint256 _value);
 	event Approval (address indexed _owner, address indexed _spender, uint256 _value);
-	event Burn (address indexed _account, uint256 _value);
-	event Mint (address indexed _account, uint256 _value);
 
 	constructor () {
 		_balances[msg.sender] = 1000 * 10 ** decimals;
+	}
+
+	function _transfer (address _from, address _to, uint256 _value) internal {
+		require(_from != address(0), "ERC20: transfer from the zero address");
+		require(_to != address(0), "ERC20: transfer to the zero address");
+		require(_value <= _balances[_from], "ERC20: transfer amount exceeds balance");
+
+		_balances[_from] = _balances[_from] - _value;
+		_balances[_to] = _balances[_to] + _value;
+		emit Transfer(_from, _to, _value);
+	}
+
+	function _burn (address _from, uint256 _value) internal {
+		require(_from != address(0), "ERC20: burn from the zero address");
+		require(_value <= _balances[_from], "ERC20: burn amount exceeds balance");
+
+		_balances[_from] = _balances[_from] - _value;
+		totalSupply = totalSupply - _value;
+		emit Transfer(_from, address(0), _value);
+	}
+
+	function _mint (address _to, uint256 _value) internal {
+		require(_to != address(0), "ERC20: mint to the zero address");
+
+		totalSupply = totalSupply + _value;
+		_balances[_to] = _balances[_to] + _value;
+		emit Transfer(address(0), _to, _value);
 	}
 
 	function name () public pure returns (string memory) {
@@ -31,23 +56,16 @@ contract YDToken {
 	}
 
 	function transfer (address _to, uint256 _value) public returns (bool) {
-		require(_value <= _balances[msg.sender], "Insufficient balance");
-
-		_balances[msg.sender] = _balances[msg.sender] - _value;
-		_balances[_to] = _balances[_to] + _value;
-		emit Transfer(msg.sender, _to, _value);
+		_transfer(msg.sender, _to, _value);
 
 		return true;
 	}
 
 	function transferFrom (address _from, address _to, uint _value) public returns (bool) {
 		require(_value <= _allowed[_from][msg.sender], "Not allowed");
-		require(_value <= _balances[_from], "Insufficient balance");
 
-		_balances[_from] = _balances[_from] - _value;
-		_balances[_to] = _balances[_to] + _value;
+		_transfer(_from, _to, _value);
 		_allowed[_from][msg.sender] = _allowed[_from][msg.sender] - _value;
-		emit Transfer(_from, _to, _value);
 
 		return true;
 	}
@@ -80,31 +98,23 @@ contract YDToken {
 	}
 
 	function burn (uint256 _value) public returns (bool) {
-		require(_value <= _balances[msg.sender], "Insufficient balance");
-
-		totalSupply = totalSupply - _value;
-		_balances[msg.sender] = _balances[msg.sender] - _value;
-		emit Burn(msg.sender, _value);
+		_burn(msg.sender, _value);
 
 		return true;
 	}
 
 	function burnFrom (address _from, uint256 _value) public returns (bool) {
 		require(_value <= _allowed[_from][msg.sender], "Not allowed");
-		require(_value <= _balances[_from], "Insufficient balance");
-
-		totalSupply = totalSupply - _value;
-		_balances[_from] = _balances[_from] - _value;
-		emit Burn(_from, _value);
+		
+		_burn(_from, _value);
 
 		return true;
 	}
 
 	function mint (address _to, uint256 _value) public returns (bool) {
 		require(msg.sender == admin, "Only admin can mint coins");
-		totalSupply = totalSupply + _value;
-		_balances[_to] = _balances[_to] + _value;
-		emit Mint (_to, _value);
+		
+		_mint(_to, _value);
 
 		return true;
 	}

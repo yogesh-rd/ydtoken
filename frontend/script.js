@@ -60,9 +60,9 @@ const getContract = async (web3) => {
 
 const transfer = async () => {
     const amount = Number($("#transfer-amount")[0].value);
-    const receiverAddress = $("#receiver")[0].value;
+    const recipientAddress = $("#recipient")[0].value;
     await contract.methods
-        .transfer(receiverAddress, BigInt(amount * 10 ** 18))
+        .transfer(recipientAddress, BigInt(amount * 10 ** 18))
         .send({ from: accounts[0], gas: 200000 });
     await updateBalance();
 };
@@ -87,10 +87,10 @@ const check = async () => {
 
 const spend = async () => {
     const owner = $("#owner")[0].value;
-    const receiver = $("#receiver-behalf")[0].value;
+    const recipient = $("#recipient-behalf")[0].value;
     const amount = Number($("#amount-behalf")[0].value);
     await contract.methods
-        .transferFrom(owner, receiver, BigInt(amount * 10 ** decimals))
+        .transferFrom(owner, recipient, BigInt(amount * 10 ** decimals))
         .send({ from: accounts[0], gas: 400000 });
     updateBalance();
 };
@@ -105,10 +105,10 @@ const burn = async () => {
 };
 
 const mint = async () => {
-    const receiver = $("#mint-receiver")[0].value;
+    const recipient = $("#mint-recipient")[0].value;
     const amount = Number($("#mint-amount")[0].value);
     await contract.methods
-        .mint(receiver, BigInt(amount * 10 ** decimals))
+        .mint(recipient, BigInt(amount * 10 ** decimals))
         .send({ from: accounts[0], gas: 400000 });
     updateTotalSupply();
     updateBalance();
@@ -128,7 +128,7 @@ async function init() {
 
 init();
 
-// const id = setInterval(async () => {
-//     updateTotalSupply();
-//     console.log("TOTAL SUPPLY UPDATED");
-// }, 10000);
+const id = setInterval(async () => {
+    updateTotalSupply();
+    updateBalance();
+}, 5000);
