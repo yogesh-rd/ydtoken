@@ -114,11 +114,49 @@ const mint = async () => {
     updateBalance();
 };
 
+$("#buy-amount").keyup(() => {
+    $("#eth-cost")[0].textContent = $("#buy-amount")[0].value / 1000;
+});
+
+$("#sell-amount").keyup(() => {
+    $("#sell-price")[0].textContent = (
+        $("#sell-amount")[0].value / 1010
+    ).toFixed(4);
+});
+
+const buy = async () => {
+    const amount = $("#eth-cost")[0].textContent;
+    await contract.methods.buy().send({
+        from: accounts[0],
+        gasPrice: web3.utils.toHex(20000000000),
+        gas: web3.utils.toHex(60000),
+        value: web3.utils.toHex(web3.utils.toWei(amount, "ether")),
+    });
+    updateBalance();
+};
+
+const sell = async () => {
+    const amount = $("#sell-amount")[0].value;
+    await contract.methods.sell(BigInt(amount * 10 ** decimals)).send({
+        from: accounts[0],
+        gasPrice: web3.utils.toHex(20000000000),
+        gas: web3.utils.toHex(60000),
+    });
+};
+
 async function init() {
     await getWeb3();
     contract = await getContract(web3);
     decimals = await contract.methods.decimals().call();
     display();
+    if ($("#buy-amount").value != "") {
+        $("#eth-cost")[0].textContent = $("#buy-amount")[0].value / 1000;
+    }
+    if ($("#sell-amount").value != "") {
+        $("#sell-price")[0].textContent = (
+            $("#sell-amount")[0].value / 1020
+        ).toFixed(4);
+    }
     eth.on("accountsChanged", (new_accounts) => {
         accounts = new_accounts;
         updateAddress();

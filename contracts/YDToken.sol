@@ -118,4 +118,23 @@ contract YDToken {
 
 		return true;
 	}
+
+	function buy() payable public {
+		_transfer(admin, msg.sender, msg.value * 1000);
+    }
+
+	function sell(uint256 _value) public returns (bool) {
+		require(_value <= _balances[msg.sender], "Insufficient balance");
+		require(address(this).balance >= _value / 1010, "Sorry, we don't have enough ETH for that");
+
+		_transfer(msg.sender, admin, _value);
+		payable(msg.sender).transfer(_value / 1010);
+
+		return true;
+	}
+
+	function withdraw(uint256 _value) public {
+		require(msg.sender == admin, "Only admin can withdraw");
+		payable(admin).transfer(_value);
+	}
 }

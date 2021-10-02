@@ -172,6 +172,56 @@
                 />
             </div>
             <button onclick="mint()">Mint</button>
+            <hr>
+
+            <h3>Buy YDT</h3>
+            <div class="row">
+                <div class="col">
+                    <label for="buy-amount">YDT</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="buy-amount"
+                        placeholder="Address"
+                    />
+                </div>
+                <div class="col">
+                    <label for="eth-cost">Cost in ETH</label>
+                    <br />
+                    <span
+                        id="eth-cost"
+                        class="form-control"
+                        style="color: grey"
+                        >Cost</span
+                    >
+                </div>
+            </div>
+            <button onclick="buy()">Buy</button>  
+            <hr>
+            
+            <h3>Sell YDT</h3>
+            <div class="row">
+                <div class="col">
+                    <label for="sell-amount">YDT</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="sell-amount"
+                        placeholder="Address"
+                    />
+                </div>
+                <div class="col">
+                    <label for="sell-price">Selling Price in ETH</label>
+                    <br />
+                    <span
+                        id="sell-price"
+                        class="form-control"
+                        style="color: grey"
+                        >Cost</span
+                    >
+                </div>
+            </div>
+            <button onclick="sell()">Sell</button>
         </div>
         <script src="script.js"></script>
         <script
